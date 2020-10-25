@@ -18,6 +18,7 @@ package com.gallery.imageselector;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,6 +42,7 @@ import androidx.fragment.app.Fragment;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,6 +54,31 @@ import java.io.OutputStream;
  * this object (GalleryImageSelector.getSavedImage.
  * The library is highly optimized (fixes a lot of bugs including the rotation bug) and work with a variety of different galleries,
  * even when combined (you can use a gallery for pick and another for crop without problems).
+ *
+ * When GalleryImageSelector is created, when the user pick an image and when he crop it the results of those operations will be sent
+ * via onActivityResult of the activity or the fragment passed to GalleryImageSelector in its constructor.
+ * So you will have to override onActivityResult on the activity or on the fragment and inside of it call the method onActivityResult
+ * of GalleryImageSelector and pass to it the results received from onActivityResult, for more details keep reading.
+ *
+ * To use the library follow these passages:
+ *
+ * - Create an ImageView that will contain the image.
+ *
+ * - Create a GalleryImageSelector object as attribute of the Object that will override onActivityResult (the Fragment or the Activity),
+ * pick the image view with findViewById and pass it to the constructor of GalleryImageSelector,
+ * in the constructor also insert the current activity, and if you are using a Fragment and you want to override onActivityResult in that fragment
+ * pass the fragment in addition to the activity (you have to pass the activity anyway) instead if you want to override onActivityResult in the
+ * activity or you are not using a Fragment pass the activity and null for the fragment argument.
+ * The last argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
+ * should be the same of the ImageView.
+ *
+ * - Override onActivityResult in the activity that was passed or in the fragment if it is not null and here call (using the attribute of type GalleryImageSelector created before) galleryImageSelector.onActivityResult
+ * passing the arguments of the onActivityResult overwritten and true or false respectively if you want to save the selected image or not (you can save it later with saveContent()).
+ *
+ * For saving the image you can mark the last parameter of galleryImageSelector.onActivityResult with true, in this case the image will be
+ * saved automatically at the end of the crop, if you want instead to save the image in another moment (maybe after an error check for other data)
+ * you can mark the save parameter of onActivityResult false and use galleryImageSelector.saveImage() and UserImageContainer will save the last cropped image.
+ * The saved image can be accessed with "new File(context.getFilesDir(), "user_image");" or with the static method GalleryImageSelector.getSavedImage(context).
  */
 public class GalleryImageSelector {
     private final String DEFAULT_IMAGE = "default";
@@ -67,12 +94,18 @@ public class GalleryImageSelector {
     private Fragment fragment;
 
     /**
-     *
-     * @param image
-     * @param activity
-     * @param fragment
+     * In this constructor you have to pass the ImageView that will contain the image, the current activity, and if you are using a Fragment and you want to override onActivityResult in that fragment
+     * pass the fragment in addition to the activity (you have to pass the activity anyway) instead if you want to override onActivityResult in the
+     * activity or you are not using a Fragment pass the activity and null for the fragment argument.
+     * The last argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
+     * should be the same of the ImageView.
+     * @param image the ImageView that will contain the image selected and cropped.
+     * @param activity the current activity, if fragment is != null this onActivityResult will be called on the Fragment, not in the Activity.
+     * @param fragment the fragment that override onActivityResult, it can be null, in that case the Activity will have to override onActivityResult.
+     * @param defaultImageResId resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
+     * should be the same of the ImageView.
      */
-    public GalleryImageSelector(ImageView image, @NonNull final Activity activity, @Nullable final Fragment fragment) {
+    public GalleryImageSelector(ImageView image, @NonNull final Activity activity, @Nullable final Fragment fragment, int defaultImageResId) {
         this.imageView = image;
         this.activity = activity;
         this.fragment = fragment;
@@ -87,7 +120,7 @@ public class GalleryImageSelector {
             imageView.setTag(CUSTOM_IMAGE);
             this.image = circlularImage.getBitmap();
         } else {
-            imageView.setImageResource(R.drawable.user_icon); //insert the default image in drawable and set it here in imageView
+            imageView.setImageResource(defaultImageResId); //insert the default image in drawable and set it here in imageView
             imageView.setTag(DEFAULT_IMAGE);
         }
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +152,7 @@ public class GalleryImageSelector {
                             }
                         } else {
                             // insert the default image in the imageView
-                            imageView.setImageResource(R.drawable.user_icon);
+                            imageView.setImageResource(defaultImageResId);
                             imageView.setTag(DEFAULT_IMAGE);
                             GalleryImageSelector.this.image = null;
                             // delete the previous saved image
@@ -134,6 +167,18 @@ public class GalleryImageSelector {
         });
     }
 
+    /**
+     * In the overwritten onActivityResult (in the Fragment or in the Activity) you have to call this method an pass to it all the arguments
+     * received from the overwritten method, plus you have to set if the image will be saved in this method or not (if you want to save it later
+     * with saveImage() or you not want to save the image at all, in this case when the ImageView will be recreated it will show the default image).
+     *
+     * This method will be called when the image is selected and when the image si cropped, in the last case this method will insert the cropped
+     * image in the ImageView passed in the constructor, and if saveImage is true it will also save the image.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     * @param saveImage if you want to save the image in this method or not
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data, boolean saveImage) {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             //copyFile the result into cache
@@ -205,14 +250,22 @@ public class GalleryImageSelector {
         }
     }
 
+    /**
+     * This method will save the last image selected and cropped
+     */
     public void saveImage() {
         if (image != null) {
             saveBitmapToFile(new File(activity.getFilesDir(), "user_image"), image);
         }
     }
 
-    public Bitmap getSavedImage(){
-        return getBitmapFromFile(new File(activity.getFilesDir(), "user_image"));
+    /**
+     * This static method will return the last image saved
+     * @param context context used to getFilesDir()
+     * @return the last image saved
+     */
+    public static Bitmap getSavedImage(Context context){
+        return getBitmapFromFile(new File(context.getFilesDir(), "user_image"));
     }
 
     private static synchronized Bitmap getBitmapFromFile(File file) {
