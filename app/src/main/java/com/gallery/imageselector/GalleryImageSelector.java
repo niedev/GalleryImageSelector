@@ -300,11 +300,11 @@ public class GalleryImageSelector {
     }
 
     private Uri getTempPickedUri() {
-        return FileProvider.getUriForFile(activity, "nie.translator.userimage.fileprovider", getTempPickedFile());
+        return FileProvider.getUriForFile(activity, "com.gallery.imageselector.fileprovider", getTempPickedFile());
     }
 
     private Uri getTempCroppedUri() {
-        return FileProvider.getUriForFile(activity, "nie.translator.userimage.fileprovider", getTempCroppedFile());
+        return FileProvider.getUriForFile(activity, "com.gallery.imageselector.fileprovider", getTempCroppedFile());
     }
 
     private File getTempPickedFile() {
