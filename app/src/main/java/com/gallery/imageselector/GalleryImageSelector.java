@@ -47,6 +47,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * The GalleryImageSelector is a tool for pick an image from gallery, crop it and save it in an internal file that can be accessed from
+ * this object (GalleryImageSelector.getSavedImage.
+ * The library is highly optimized (fixes a lot of bugs including the rotation bug) and work with a variety of different galleries,
+ * even when combined (you can use a gallery for pick and another for crop without problems).
+ */
 public class GalleryImageSelector {
     private final String DEFAULT_IMAGE = "default";
     private final String CUSTOM_IMAGE = "custom";
@@ -60,7 +66,12 @@ public class GalleryImageSelector {
     private Activity activity;
     private Fragment fragment;
 
-
+    /**
+     *
+     * @param image
+     * @param activity
+     * @param fragment
+     */
     public GalleryImageSelector(ImageView image, @NonNull final Activity activity, @Nullable final Fragment fragment) {
         this.imageView = image;
         this.activity = activity;
@@ -194,6 +205,36 @@ public class GalleryImageSelector {
         }
     }
 
+    public void saveImage() {
+        if (image != null) {
+            saveBitmapToFile(new File(activity.getFilesDir(), "user_image"), image);
+        }
+    }
+
+    public Bitmap getSavedImage(){
+        return getBitmapFromFile(new File(activity.getFilesDir(), "user_image"));
+    }
+
+    private static synchronized Bitmap getBitmapFromFile(File file) {
+        if (file.exists()) {
+            return BitmapFactory.decodeFile(file.getPath());
+        } else {
+            return null;
+        }
+    }
+
+    private static synchronized void saveBitmapToFile(File file, Bitmap image) {
+        OutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void copyImageUriIntoFile(Uri sourceUri, File destinationFile) {
         InputStream inputStream = null;
         BufferedInputStream bis = null;
@@ -219,12 +260,6 @@ public class GalleryImageSelector {
             }
         }
 
-    }
-
-    public void saveContent() {
-        if (image != null) {
-            saveBitmapToFile(new File(activity.getFilesDir(), "user_image"), image);
-        }
     }
 
     private static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
@@ -298,26 +333,5 @@ public class GalleryImageSelector {
             }
         }
         return file.getAbsoluteFile();
-    }
-
-
-    public static synchronized Bitmap getBitmapFromFile(File file) {
-        if (file.exists()) {
-            return BitmapFactory.decodeFile(file.getPath());
-        } else {
-            return null;
-        }
-    }
-
-    public static synchronized void saveBitmapToFile(File file, Bitmap image) {
-        OutputStream outStream = null;
-        try {
-            outStream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            outStream.flush();
-            outStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
