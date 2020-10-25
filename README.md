@@ -1,5 +1,5 @@
 ### GalleryImageSelector
-The GalleryImageSelector is a library, created originally for <a href="https://github.com/niedev/RTranslator" target="_blank" rel="noopener noreferrer">RTranslator</a>, that allows you to pick an image from gallery, crop it and save it in an internal file that can be accessed from the GalleryImageSelector class (via the static method GalleryImageSelector.getSavedImage).<br />
+The GalleryImageSelector is a library, created originally for <a href="https://github.com/niedev/RTranslator" target="_blank" rel="noopener noreferrer">RTranslator</a>, that allows you to pick an image from gallery, crop it and save it in an internal file that can be accessed from the GalleryImageSelector class (via the static method GalleryImageSelector.getSavedImage).<br /><br />
 The library is highly optimized (fixes a lot of bugs including the rotation bug) and work with a variety of different galleries,
 even when combined (you can use a gallery for pick and another for crop without problems). If you have problem with a specific gallery app please report it in Issues (I cannot guarantee that I will be able to fix the problem but I can try if I have time).<br />
 
