@@ -62,11 +62,12 @@ import java.io.OutputStream;
  * <br /><br /><br />
  * To use the library follow these passages:
  * <br /><br />
- * - Insert this code inside <application> in the manifest of your app:
+ * - Insert this code inside <application> in the manifest of your app, and fill authorities with a unique name of your choice
+ *(if your app has the same authority name of another intalled on a phone your app will not be installed) like "com.hello.world":
  * <pre>{@code
  *         <provider
  *             android:name="androidx.core.content.FileProvider"
- *             android:authorities="com.gallery.imageselector.fileprovider"
+ *             android:authorities="custom autority name"
  *             android:exported="false"
  *             android:grantUriPermissions="true">
  *             <meta-data
@@ -88,9 +89,10 @@ import java.io.OutputStream;
  * pick the image view with findViewById and pass it to the constructor of GalleryImageSelector,
  * in the constructor also insert the current activity, and if you are using a Fragment and you want to override onActivityResult in that fragment
  * pass the fragment in addition to the activity (you have to pass the activity anyway) instead if you want to override onActivityResult in the
- * activity or you are not using a Fragment pass the activity and null for the fragment argument.
- * The last argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
- * should be the same of the ImageView.
+ * activity or you are not using a Fragment pass the activity and null for the fragment argument.<br />
+ * The next argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
+ * should be the same of the ImageView.<br />
+ * The last Argument is the authority name that you chosen in the manifest (they must be equal).
  * <br /><br />
  * - Override onActivityResult in the activity that was passed or in the fragment if it is not null and here call (using the attribute of type GalleryImageSelector created before) galleryImageSelector.onActivityResult
  * passing the arguments of the onActivityResult overwritten and true or false respectively if you want to save the selected image or not (you can save it later with saveContent()).
@@ -118,14 +120,16 @@ public class GalleryImageSelector {
      * In this constructor you have to pass the ImageView that will contain the image, the current activity, and if you are using a Fragment and you want to override onActivityResult in that fragment
      * pass the fragment in addition to the activity (you have to pass the activity anyway) instead if you want to override onActivityResult in the
      * activity or you are not using a Fragment pass the activity and null for the fragment argument.<br />
-     * The last argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
-     * should be the same of the ImageView.
+     * The next argument of the constructor is the resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
+     * should be the same of the ImageView.<br />
+     * The last Argument is the authority name that you chosen in the manifest (they must be equal).
      *
      * @param image             the ImageView that will contain the image selected and cropped.
      * @param activity          the current activity, if fragment is != null this onActivityResult will be called on the Fragment, not in the Activity.
      * @param fragment          the fragment that override onActivityResult, it can be null, in that case the Activity will have to override onActivityResult.
      * @param defaultImageResId resourceId of the default image that GalleryImageSelector should use es. R.drawable.user_icon, it
      *                          should be the same of the ImageView.
+     * @param authority         the authority name that you chosen in the manifest (see the tutorial in the documentation of the class)
      */
     public GalleryImageSelector(ImageView image, @NonNull final Activity activity, @Nullable final Fragment fragment, int defaultImageResId, String authority) {
         this.imageView = image;
