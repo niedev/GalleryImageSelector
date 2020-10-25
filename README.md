@@ -26,7 +26,7 @@ To use the library follow these passages:
   </provider>
 ```
 
-- create an xml folder, if you not have one, in the res folder and insert a file named filepath.xml with this code:
+- create an xml folder (if you not have one) in the res folder and insert a file named filepath.xml with this code:
 ```
   <?xml version="1.0" encoding="utf-8"?>
   <paths>
@@ -46,7 +46,7 @@ The last Argument is the authority name that you chosen in the manifest (they mu
 
 - Override onActivityResult in the activity that was passed or in the fragment if it is not null and here call (using the attribute of type GalleryImageSelector created before) galleryImageSelector.onActivityResult
 passing the arguments of the onActivityResult overwritten and true or false respectively if you want to save the selected image or not (you can save it later with saveContent()).
-<br /><br /><br />
+<br /><br />
 
 For saving the image you can mark the last parameter of galleryImageSelector.onActivityResult with true, in this case the image will be
 saved automatically at the end of the crop, if you want instead to save the image in another moment (maybe after an error check for other data)
