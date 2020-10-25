@@ -21,7 +21,8 @@ dependencies {
         implementation 'com.github.niedev:GalleryImageSelector:1.0.7'
 }
 ```
-When GalleryImageSelector is created, when the user pick an image and when he crop it the results of those operations will be sent
+
+<br />When GalleryImageSelector is created, when the user pick an image and when he crop it the results of those operations will be sent
 via onActivityResult of the activity or the fragment passed to GalleryImageSelector in its constructor.
 So you will have to override onActivityResult on the activity or on the fragment and inside of it call the method onActivityResult
 of GalleryImageSelector and pass to it the results received from onActivityResult, for more details keep reading.
