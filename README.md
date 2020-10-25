@@ -6,6 +6,21 @@ even when combined (you can use a gallery for pick and another for crop without 
 For see an example app check <a href="https://github.com/niedev/GalleryImageSelectorExample" target="_blank" rel="noopener noreferrer">BluetoothCommunicatorExample</a> or <a href="https://github.com/niedev/RTranslator" target="_blank" rel="noopener noreferrer">RTranslator</a><br /><br />
 
 #### Tutorial
+For use the library in a project you have to add jitpack.io to your root build.gradle (project):
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+Then add the last version of BluetoothCommunicator to your app build.gradle
+```
+dependencies {
+        implementation 'com.github.niedev:GalleryImageSelector:1.0.7'
+}
+```
 When GalleryImageSelector is created, when the user pick an image and when he crop it the results of those operations will be sent
 via onActivityResult of the activity or the fragment passed to GalleryImageSelector in its constructor.
 So you will have to override onActivityResult on the activity or on the fragment and inside of it call the method onActivityResult
