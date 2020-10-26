@@ -51,7 +51,7 @@ import java.io.OutputStream;
 
 /**
  * The GalleryImageSelector is a tool for pick an image from gallery, crop it and save it in an internal file that can be accessed from
- * this object (GalleryImageSelector.getSavedImage.
+ * this object (GalleryImageSelector.getSavedImage).
  * The library is highly optimized (fixes a lot of bugs including the rotation bug) and work with a variety of different galleries,
  * even when combined (you can use a gallery for pick and another for crop without problems).
  * <br /><br /><br />
