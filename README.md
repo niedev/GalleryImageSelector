@@ -5,6 +5,14 @@ even when combined (you can use a gallery for pick and another for crop without 
 
 For see an example app check <a href="https://github.com/niedev/GalleryImageSelectorExample" target="_blank" rel="noopener noreferrer">BluetoothCommunicatorExample</a> or <a href="https://github.com/niedev/RTranslator" target="_blank" rel="noopener noreferrer">RTranslator</a><br /><br />
 
+<br /><br />
+<p align="center">
+	<kbd>
+		<img src="https://github.com/niedev/UserImageExample/blob/master/images/image_selection.gif" >
+	</kbd>
+</p>
+<br />
+
 #### Tutorial
 For use the library in a project you have to add jitpack.io to your root build.gradle (project):
 ```
